@@ -11,6 +11,15 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//configuração do CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy => policy
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
 
 var app = builder.Build();
 
@@ -26,6 +35,9 @@ app.UseSwaggerUI();
 
 ///executando os serviços do Scalar
 app.MapScalarApiReference(s =>s.WithTheme(ScalarTheme.BluePlanet));
+
+//configuração do CORS
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 

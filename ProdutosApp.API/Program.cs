@@ -10,13 +10,15 @@ builder.Services.AddOpenApi();
 ///adicionando os servicos do swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//Lear as configurações de origens mapeadas no appsetting.json
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
 
 //configuração do CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
+    options.AddPolicy("AllowOrigins",
         policy => policy
-            .AllowAnyOrigin()
+            .WithOrigins(allowedOrigins!)//valores do appsettings.json
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
@@ -37,7 +39,7 @@ app.UseSwaggerUI();
 app.MapScalarApiReference(s =>s.WithTheme(ScalarTheme.BluePlanet));
 
 //configuração do CORS
-app.UseCors("AllowAll");
+app.UseCors("AllowOrigins");
 
 app.UseAuthorization();
 
